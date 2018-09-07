@@ -18,17 +18,11 @@ class CodeCheckScraper {
         return page.getUrls()
     }
 
-    fun getProductInformationForUrl(productUrl: String): Product {
-        val page: ProductPage = parser.parseProductPage(Jsoup.connect(productUrl).get())
-        return Product(page.getEan(), page.getMicroplastic())
-    }
-
     fun writeAllProductsByCategory(categoryUrl: String) {
         var counter = 1
         var hasNext = writeProductToFile(categoryUrl, counter)
 
         while(hasNext) {
-            print("Currently on page: $counter")
             counter++
             hasNext = writeProductToFile(categoryUrl, counter)
         }
@@ -49,5 +43,3 @@ class CodeCheckScraper {
         return page.hasNext()
     }
 }
-
-class Product(val ean: String?, microplastic: String?)
