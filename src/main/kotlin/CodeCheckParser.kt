@@ -21,14 +21,27 @@ class ProductPage(private val document: Document) {
                 .find { it.getElementsByClass("product-info-label").text() == "Strichcode-Nummer" }
         return find?.child(1)?.text()
     }
-    fun hasMicroplastic(): Boolean? {
+    fun hasMicroplastic(): Boolean {
         return document.getElementsByClass("c-2")
-                .any { it -> it.text().equals("Enthält Mikroplastik") }
+                .any { it -> it.text() == "Enthält Mikroplastik" }
+    }
+    fun getMicroplastic(): String? {
+        val find: Element? = document.getElementsByClass("rating-group-header")
+                .find { it -> it.getElementsByClass("c-2").text() == "Enthält Mikroplastik" }
+
+        return find?.getElementsByClass("c-3")?.first()?.text()
+    }
+    fun getProductName(): String {
+        return document.getElementsByClass("page-title-headline").first().getElementsByTag("h1").first().text()
+    }
+
+    fun getCategory(): String? {
+        return document.getElementsByClass("product-info-item").first().getElementsByTag("a").first().text()
     }
 }
 
 class SearchResultsPage(private val document: Document) {
-    fun getProducts(): List<Product>? {
+    fun getProducts(): List<SearchResultProduct>? {
         return document.getElementsByClass("search-result")
                 .filter { it.isProduct() }
                 .map { it.asProduct() }
@@ -36,7 +49,7 @@ class SearchResultsPage(private val document: Document) {
 }
 
 class CategoryPage(private val document: Document) {
-    fun getProducts(): List<Product>? {
+    fun getProducts(): List<SearchResultProduct>? {
         return document.getElementsByClass("cell")
                 .map { it.asProduct() }
     }
@@ -44,13 +57,13 @@ class CategoryPage(private val document: Document) {
 
 
 
-private fun Element.asProduct(): Product {
+private fun Element.asProduct(): SearchResultProduct {
     val relativePath = this.getElementsByAttribute("href").attr("href")
-    return Product("https://www.codecheck.info$relativePath")
+    return SearchResultProduct("https://www.codecheck.info$relativePath")
 }
 
 private fun Element.isProduct(): Boolean {
     return this.getElementsByClass("middle").first().getElementsByClass("lower").size == 1
 }
 
-class Product(val url: String)
+class SearchResultProduct(val url: String)

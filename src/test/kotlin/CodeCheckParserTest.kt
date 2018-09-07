@@ -29,6 +29,28 @@ class CodeCheckParserTest {
     }
 
     @Test
+    fun shouldGetMicroplastics() {
+        val filePath: String = CodeCheckParserTest::class.java.getResource("product-with-microplastic.html").file
+        val page: ProductPage = parser.parseProductPage(Jsoup.parse(File(filePath), "UTF-8"))
+        assertThat(page.hasMicroplastic(), `is`(true))
+        assertThat(page.getMicroplastic(), `is`("Polyethylene"))
+    }
+
+    @Test
+    fun shouldGetProductName() {
+        val filePath: String = CodeCheckParserTest::class.java.getResource("product-with-microplastic.html").file
+        val page: ProductPage = parser.parseProductPage(Jsoup.parse(File(filePath), "UTF-8"))
+        assertThat(page.getProductName(), `is`("VEET Suprem Essence Kaltwachsstreifen"))
+    }
+
+    @Test
+    fun shouldGetCategory() {
+        val filePath: String = CodeCheckParserTest::class.java.getResource("product-with-microplastic.html").file
+        val page: ProductPage = parser.parseProductPage(Jsoup.parse(File(filePath), "UTF-8"))
+        assertThat(page.getCategory(), `is`("Warm- & Kaltwachs"))
+    }
+
+    @Test
     fun shouldFindProductUrlsOnFirstPage() {
         val filePath: String = CodeCheckParserTest::class.java.getResource("searchResults.html").file
         val page: SearchResultsPage = parser.parseSearchResultsPage(Jsoup.parse(File(filePath), "UTF-8"))
