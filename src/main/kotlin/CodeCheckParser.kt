@@ -62,6 +62,10 @@ class CategoryPage(private val document: Document) {
         return document.getElementsByClass("cell")
                 .map { it.asProductUrl()}
     }
+
+    fun hasNext(): Boolean {
+        return document.getElementsByClass("next").size > 0
+    }
 }
 
 private fun Element.asProduct(): SearchResultProduct {
