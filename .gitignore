@@ -3,4 +3,6 @@ out/
 bin
 build/
 .gradle
-
+*.iml
+*.ipr
+*.iws
