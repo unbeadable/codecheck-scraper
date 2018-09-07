@@ -48,10 +48,19 @@ class SearchResultsPage(private val document: Document) {
     }
 }
 
+private fun Element.asProductUrl(): String {
+    val relativePath = this.getElementsByAttribute("href").attr("href")
+    return "https://www.codecheck.info$relativePath"
+}
+
 class CategoryPage(private val document: Document) {
     fun getProducts(): List<SearchResultProduct>? {
         return document.getElementsByClass("cell")
                 .map { it.asProduct() }
+    }
+    fun getUrls(): List<String> {
+        return document.getElementsByClass("cell")
+                .map { it.asProductUrl()}
     }
 }
 

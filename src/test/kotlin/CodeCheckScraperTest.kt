@@ -1,4 +1,5 @@
 import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.CoreMatchers.notNullValue
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
 import org.junit.Test
@@ -13,8 +14,14 @@ class CodeCheckScraperTest {
 
     @Test
     fun shouldGetLinksFromFile() {
-        assertThat(scraper.getLinksFromFile()!![0], `is`("https://www.codecheck.info/kosmetik_koerperpflege/aetherische_oele_pflanzenauszuege/aetherische_oele_mischungen.kat"))
-        assertThat(scraper.getLinksFromFile()!![1], `is`("https://www.codecheck.info/kosmetik_koerperpflege/aetherische_oele_pflanzenauszuege/aetherische_oele_100_rein.kat"))
+        assertThat(scraper.getCategoryLinksFromFile()!![0], `is`("https://www.codecheck.info/kosmetik_koerperpflege/aetherische_oele_pflanzenauszuege/aetherische_oele_mischungen.kat"))
+        assertThat(scraper.getCategoryLinksFromFile()!![1], `is`("https://www.codecheck.info/kosmetik_koerperpflege/aetherische_oele_pflanzenauszuege/aetherische_oele_100_rein.kat"))
+    }
+
+    @Test
+    fun shouldGetLinksByCategory() {
+        assertThat(scraper.getProductLinksForCategory("https://www.codecheck.info/kosmetik_koerperpflege/aetherische_oele_pflanzenauszuege/aetherische_oele_mischungen.kat")[0],
+                `is`(notNullValue()))
     }
 
 }

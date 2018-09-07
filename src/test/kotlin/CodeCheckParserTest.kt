@@ -51,7 +51,7 @@ class CodeCheckParserTest {
     }
 
     @Test
-    fun shouldFindProductUrlsOnFirstPage() {
+    fun shouldFindProductUrlsOnSearchResultsPage() {
         val filePath: String = CodeCheckParserTest::class.java.getResource("searchResults.html").file
         val page: SearchResultsPage = parser.parseSearchResultsPage(Jsoup.parse(File(filePath), "UTF-8"))
         assertThat(page.getProducts()!![0].url, `is`("https://www.codecheck.info/kosmetik_koerperpflege/gesichtspflege/gesichtsmasken/id_2096663156/Tony_Moly_Timeless_Ferment_Snail_Gel_Mask.pro"))
@@ -59,7 +59,15 @@ class CodeCheckParserTest {
     }
 
     @Test
-    fun shouldFindProductUrlsOnCategoryPage() {
+    fun shouldFindUrlsOnCategoryPage() {
+        val filePath: String = CodeCheckParserTest::class.java.getResource("searchResults.html").file
+        val page: CategoryPage = parser.parseCategoryPage(Jsoup.parse(File(filePath), "UTF-8"))
+        assertThat(page.getUrls()[0], `is`("https://www.codecheck.info/kosmetik_koerperpflege/gesichtspflege/gesichtsmasken/id_2096663156/Tony_Moly_Timeless_Ferment_Snail_Gel_Mask.pro"))
+        assertThat(page.getUrls()[1], `is`("https://www.codecheck.info/kosmetik/gesichtspflege/gesichtscremen/ean_20714806323/id_34370165/Clinique_Pep_Start_Hydroblur_Moisturizer_Gesichtscreme_50_ml.pro"))
+    }
+
+    @Test
+    fun shouldFindProductsOnCategoryPage() {
         val filePath: String = CodeCheckParserTest::class.java.getResource("category.html").file
         val page: CategoryPage = parser.parseCategoryPage(Jsoup.parse(File(filePath), "UTF-8"))
         assertThat(page.getProducts()!![0].url, `is`("https://www.codecheck.info/kosmetik_koerperpflege/rasur_enthaarung/warm_kaltwachs/id_865576968/Balea_Kaltwachsstreifen_Koerper.pro"))
