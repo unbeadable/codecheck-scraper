@@ -23,16 +23,30 @@ class CodeCheckScraper {
         return Product(page.getEan(), page.getMicroplastic())
     }
 
-    fun writeProductToFile(categoryUrl: String) {
-        getProductLinksForCategory(categoryUrl).forEach {
+    fun writeAllProductsByCategory(categoryUrl: String) {
+        var counter = 1
+        var hasNext = writeProductToFile(categoryUrl, counter)
+
+        while(hasNext) {
+            print("Currently on page: $counter")
+            counter++
+            hasNext = writeProductToFile(categoryUrl, counter)
+        }
+    }
+
+    fun writeProductToFile(categoryUrl: String, pageNumber: Int = 1): Boolean {
+        val url = categoryUrl.split(".kat")[0]
+        val page: CategoryPage = parser.parseCategoryPage(Jsoup.connect("$url/page-$pageNumber.kat").get())
+
+        page.getUrls().forEach {
             val page: ProductPage = parser.parseProductPage(Jsoup.connect(it).get())
 
-            if (page.hasMicroplastic() && page.getEan() != null) {
+            if (page.hasMicroplastic() && page.getEan() != "Bitte ergänzen" ) {
                 val text = "${page.getEan()},${page.getMicroplastic()}\n"
                 File("beadables.csv").appendText(text)
             }
         }
-
+        return page.hasNext()
     }
 }
 
