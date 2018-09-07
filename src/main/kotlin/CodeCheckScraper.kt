@@ -12,8 +12,9 @@ class CodeCheckScraper {
         return Klaxon().parseArray(stream)
     }
 
-    fun getProductLinksForCategory(categoryUrl: String): List<String> {
-        val page: CategoryPage = parser.parseCategoryPage(Jsoup.connect(categoryUrl).get())
+    fun getProductLinksForCategory(categoryUrl: String, pageNumber: Int = 1): List<String> {
+        val url = categoryUrl.split(".kat")[0]
+        val page: CategoryPage = parser.parseCategoryPage(Jsoup.connect("$url/page-$pageNumber.kat").get())
         return page.getUrls()
     }
 
