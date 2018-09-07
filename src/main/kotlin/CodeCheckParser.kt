@@ -55,8 +55,6 @@ class CategoryPage(private val document: Document) {
     }
 }
 
-
-
 private fun Element.asProduct(): SearchResultProduct {
     val relativePath = this.getElementsByAttribute("href").attr("href")
     return SearchResultProduct("https://www.codecheck.info$relativePath")
