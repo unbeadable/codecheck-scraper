@@ -15,4 +15,11 @@ class CodeCheckScraper {
         val page: CategoryPage = parser.parseCategoryPage(Jsoup.connect(categoryUrl).get())
         return page.getUrls()
     }
+
+    fun getProductInformationForUrl(productUrl: String): Product {
+        val page: ProductPage = parser.parseProductPage(Jsoup.connect(productUrl).get())
+        return Product(page.getProductName())
+    }
 }
+
+class Product(val name: String)

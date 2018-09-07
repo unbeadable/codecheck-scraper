@@ -24,4 +24,10 @@ class CodeCheckScraperTest {
                 `is`(notNullValue()))
     }
 
+    @Test
+    fun shouldGetProductByUrl() {
+        val product: Product = scraper.getProductInformationForUrl("https://www.codecheck.info/kosmetik_koerperpflege/aetherische_oele_pflanzenauszuege/aetherische_oele_mischungen/ean_4086900216006/id_2038201561/Schlafwohl_Aroma_Roll_On_bio.pro")
+        assertThat(product.name, `is`("Schlafwohl Aroma Roll-On bio"))
+    }
+
 }
