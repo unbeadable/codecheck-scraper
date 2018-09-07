@@ -2,6 +2,7 @@ import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.notNullValue
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 
 class CodeCheckScraperTest {
@@ -36,6 +37,7 @@ class CodeCheckScraperTest {
     }
 
     @Test
+    @Ignore
     fun shouldWriteAllProductsByCategoryToFile() {
         scraper.writeAllProductsByCategory("https://www.codecheck.info/kosmetik_koerperpflege/koerperpflege/koerperpeelings.kat")
     }
