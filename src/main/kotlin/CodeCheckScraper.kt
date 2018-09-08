@@ -22,24 +22,43 @@ class CodeCheckScraper {
         var counter = 1
         var hasNext = writeProductToFile(categoryUrl, counter)
 
-        while(hasNext) {
+        while (hasNext) {
             counter++
             hasNext = writeProductToFile(categoryUrl, counter)
         }
     }
 
+    fun writeAlleProducts() {
+        getCategoryLinksFromFile()!!.parallelStream().forEach {
+            writeAllProductsByCategory(it)
+        }
+    }
+
     fun writeProductToFile(categoryUrl: String, pageNumber: Int = 1): Boolean {
         val url = categoryUrl.split(".kat")[0]
-        val page: CategoryPage = parser.parseCategoryPage(Jsoup.connect("$url/page-$pageNumber.kat").get())
 
-        page.getUrls().forEach {
-            val page: ProductPage = parser.parseProductPage(Jsoup.connect(it).get())
+        try {
+            val page: CategoryPage = parser.parseCategoryPage(Jsoup.connect("$url/page-$pageNumber.kat").get())
 
-            if (page.hasMicroplastic() && page.getEan() != "Bitte ergänzen" ) {
-                val text = "${page.getEan()},${page.getMicroplastic()}\n"
-                File("beadables.csv").appendText(text)
+            page.getUrls().parallelStream().forEach {
+                try {
+                    val page: ProductPage = parser.parseProductPage(Jsoup.connect(it).get())
+
+                    if (page.hasMicroplastic() && page.getEan() != "Bitte ergänzen") {
+                        val text = "${page.getEan()},${page.getMicroplastic()}\n"
+                        File("beadables.csv").appendText(text)
+                    }
+
+                } catch (e: Exception) {
+                    print("Deadlink for product link: $it")
+                }
+
             }
+            return page.hasNext()
+        } catch (e: Exception) {
+            print("Deadlink for category link: $url")
+            return false
         }
-        return page.hasNext()
+
     }
 }

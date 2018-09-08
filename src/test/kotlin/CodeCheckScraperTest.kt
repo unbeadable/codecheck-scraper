@@ -36,4 +36,14 @@ class CodeCheckScraperTest {
         scraper.writeAllProductsByCategory("https://www.codecheck.info/kosmetik_koerperpflege/koerperpflege/koerperpeelings.kat")
     }
 
+    @Test
+    @Ignore
+    fun shouldWriteAllProductsToFile() {
+        scraper.writeAlleProducts()
+    }
+
+    @Test
+    fun shouldIgnoreDeaLinks() {
+        scraper.writeProductToFile("https://www.codecheck.info/kosmetik_koerperpflege/gesichtspflege/general.kat")
+    }
 }
