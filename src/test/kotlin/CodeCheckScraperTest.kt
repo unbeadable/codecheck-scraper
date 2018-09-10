@@ -37,12 +37,6 @@ class CodeCheckScraperTest {
     }
 
     @Test
-    @Ignore
-    fun shouldWriteAllProductsToFile() {
-        scraper.writeAlleProducts()
-    }
-
-    @Test
     fun shouldIgnoreDeaLinks() {
         scraper.writeProductToFile("https://www.codecheck.info/kosmetik_koerperpflege/gesichtspflege/general.kat")
     }

@@ -28,12 +28,6 @@ class CodeCheckScraper {
         }
     }
 
-    fun writeAlleProducts() {
-        getCategoryLinksFromFile()!!.parallelStream().forEach {
-            writeAllProductsByCategory(it)
-        }
-    }
-
     fun writeProductToFile(categoryUrl: String, pageNumber: Int = 1): Boolean {
         val url = categoryUrl.split(".kat")[0]
 
