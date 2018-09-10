@@ -51,6 +51,18 @@ class CodeCheckParserTest {
     }
 
     @Test
+    fun shouldGetIngredients() {
+        val filePath: String = CodeCheckParserTest::class.java.getResource("product-with-microplastic.html").file
+        val page: ProductPage = parser.parseProductPage(Jsoup.parse(File(filePath), "UTF-8"))
+
+        assertThat(page.getIngredients().size, `is`(11))
+        assertThat(page.getIngredients().get(0), `is`("Triethylene Glycol Rosinate"))
+        assertThat(page.getIngredients().get(1), `is`("Silica"))
+        assertThat(page.getIngredients().get(2), `is`("Polyethylene"))
+        assertThat(page.getIngredients().get(10), `is`("Butylphenyl"))
+    }
+
+    @Test
     fun shouldFindProductUrlsOnSearchResultsPage() {
         val filePath: String = CodeCheckParserTest::class.java.getResource("searchResults.html").file
         val page: SearchResultsPage = parser.parseSearchResultsPage(Jsoup.parse(File(filePath), "UTF-8"))

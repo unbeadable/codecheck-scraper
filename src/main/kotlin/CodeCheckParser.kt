@@ -34,9 +34,14 @@ class ProductPage(private val document: Document) {
     fun getProductName(): String {
         return document.getElementsByClass("page-title-headline").first().getElementsByTag("h1").first().text()
     }
-
     fun getCategory(): String? {
         return document.getElementsByClass("product-info-item").first().getElementsByTag("a").first().text()
+    }
+    fun getIngredients(): List<String> {
+        return document.getElementsByClass("rated-ingredients").get(0).text()
+                .split(",")
+                .map { it.trim() }
+                .filter { it != "" }
     }
 }
 
