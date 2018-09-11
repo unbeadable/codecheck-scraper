@@ -1,4 +1,6 @@
+import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Klaxon
+import com.google.gson.Gson
 import org.jsoup.Jsoup
 import java.io.File
 import java.io.InputStream
@@ -12,47 +14,55 @@ class CodeCheckScraper {
         return Klaxon().parseArray(stream)
     }
 
-    fun getProductLinksForCategory(categoryUrl: String, pageNumber: Int = 1): List<String> {
-        val url = categoryUrl.split(".kat")[0]
-        val page: CategoryPage = parser.parseCategoryPage(Jsoup.connect("$url/page-$pageNumber.kat").get())
-        return page.getUrls()
-    }
-
-    fun writeAllProductsByCategory(categoryUrl: String) {
+    fun writeProductWithIngredientsByCategory(categoryUrl: String) {
         var counter = 1
-        var hasNext = writeProductToFile(categoryUrl, counter)
+        var pair = writeProductWithIngredientsByCategoryPage(categoryUrl, counter)
+        var hasNext = pair.first
+        var products = pair.second
 
         while (hasNext) {
             counter++
-            hasNext = writeProductToFile(categoryUrl, counter)
+            pair = writeProductWithIngredientsByCategoryPage(categoryUrl, counter)
+            hasNext = pair.first
+            products = products.union(pair.second)
         }
+
+        val categoryJson = JsonObject(mapOf(
+                Pair("url", categoryUrl),
+                Pair("products", products)
+        ))
+
+        File("products.json").writeText(Gson().toJson(categoryJson))
     }
 
-    fun writeProductToFile(categoryUrl: String, pageNumber: Int = 1): Boolean {
-        val url = categoryUrl.split(".kat")[0]
+    fun writeProductWithIngredientsByCategoryPage(categoryUrl: String, pageNumber: Int = 1):Pair<Boolean, Iterable<JsonObject>> {
+        val products = mutableListOf<JsonObject>()
+        val url = "${categoryUrl.split(".kat")[0]}/page-$pageNumber.kat"
+        println("visiting category page: $url")
 
         try {
-            val page: CategoryPage = parser.parseCategoryPage(Jsoup.connect("$url/page-$pageNumber.kat").get())
-
-            page.getUrls().parallelStream().forEach {
-                try {
-                    val page: ProductPage = parser.parseProductPage(Jsoup.connect(it).get())
-
-                    if (page.hasMicroplastic() && page.getEan() != "Bitte ergänzen") {
-                        val text = "${page.getEan()},${page.getMicroplastic()}\n"
-                        File("beadables.csv").appendText(text)
-                    }
-
-                } catch (e: Exception) {
-                    print("Deadlink for product link: $it")
-                }
-
+            val page: CategoryPage = parser.parseCategoryPage(Jsoup.connect(url).get())
+            page.getUrls().stream().forEach {
+                products.add(writeProductWithIngredients(it))
             }
-            return page.hasNext()
+            return Pair(page.hasNext(), products)
         } catch (e: Exception) {
-            print("Deadlink for category link: $url")
-            return false
+            println("Deadlink for product link: $categoryUrl with error $e")
         }
+        return Pair(false, products)
+    }
 
+    fun writeProductWithIngredients(productUrl: String): JsonObject {
+        try {
+            val page: ProductPage = parser.parseProductPage(Jsoup.connect(productUrl).get())
+            return JsonObject(mapOf(
+                    Pair("ean", page.getEan()),
+                    Pair("name", page.getProductName()),
+                    Pair("category", page.getCategory()),
+                    Pair("ingredients", page.getIngredients())))
+        } catch (e: Exception) {
+            println("Deadlink for product link: $productUrl with error $e")
+        }
+        return JsonObject()
     }
 }

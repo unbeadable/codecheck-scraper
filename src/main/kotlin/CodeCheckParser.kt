@@ -25,20 +25,21 @@ class ProductPage(private val document: Document) {
         return document.getElementsByClass("c-2")
                 .any { it -> it.text() == "Enthält Mikroplastik" }
     }
-    fun getMicroplastic(): String? {
+    fun getMicroplastic(): String {
         val find: Element? = document.getElementsByClass("rating-group-header")
                 .find { it -> it.getElementsByClass("c-2").text() == "Enthält Mikroplastik" }
 
-        return find?.getElementsByClass("c-3")?.first()?.text()
+        return find?.getElementsByClass("c-3")?.first()?.text().orEmpty()
     }
     fun getProductName(): String {
-        return document.getElementsByClass("page-title-headline").first().getElementsByTag("h1").first().text()
+        return document.getElementsByClass("page-title-headline").first().getElementsByTag("h1").first().text().orEmpty()
     }
     fun getCategory(): String? {
-        return document.getElementsByClass("product-info-item").first().getElementsByTag("a").first().text()
+        return document.getElementsByClass("product-info-item").first().getElementsByTag("a").first().text().orEmpty()
     }
     fun getIngredients(): List<String> {
-        return document.getElementsByClass("rated-ingredients").get(0).text()
+        val elementsByClass = document.getElementsByClass("rated-ingredients").orEmpty()
+        return (if (elementsByClass.isEmpty()) "" else elementsByClass[0].text())
                 .split(",")
                 .map { it.trim() }
                 .filter { it != "" }
@@ -64,8 +65,7 @@ class CategoryPage(private val document: Document) {
                 .map { it.asProduct() }
     }
     fun getUrls(): List<String> {
-        return document.getElementsByClass("cell")
-                .map { it.asProductUrl()}
+        return document.getElementsByClass("t").map { it.asProductUrl()}
     }
 
     fun hasNext(): Boolean {
