@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import org.jsoup.Jsoup
 import java.io.File
 import java.io.InputStream
+import java.time.LocalDateTime
 
 
 class CodeCheckScraper {
@@ -14,7 +15,7 @@ class CodeCheckScraper {
         return Klaxon().parseArray(stream)
     }
 
-    fun writeProductWithIngredientsByCategory(categoryUrl: String) {
+    fun writeProductWithIngredientsByCategory(categoryUrl: String, filename: String) {
         var counter = 1
         var pair = writeProductWithIngredientsByCategoryPage(categoryUrl, counter)
         var hasNext = pair.first
@@ -32,7 +33,7 @@ class CodeCheckScraper {
                 Pair("products", products)
         ))
 
-        File("products.json").writeText(Gson().toJson(categoryJson))
+        File(filename).writeText(Gson().toJson(categoryJson))
     }
 
     fun writeProductWithIngredientsByCategoryPage(categoryUrl: String, pageNumber: Int = 1):Pair<Boolean, Iterable<JsonObject>> {
@@ -56,6 +57,8 @@ class CodeCheckScraper {
         try {
             val page: ProductPage = parser.parseProductPage(Jsoup.connect(productUrl).get())
             return JsonObject(mapOf(
+                    Pair("url", productUrl),
+                    Pair("timestamp", LocalDateTime.now()),
                     Pair("ean", page.getEan()),
                     Pair("name", page.getProductName()),
                     Pair("category", page.getCategory()),
