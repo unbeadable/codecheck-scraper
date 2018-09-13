@@ -56,6 +56,6 @@ class CodeCheckScraperTest {
     @Test
     @Ignore
     fun shouldWriteProductsWithIngredientsByCategory()  {
-        scraper.writeProductWithIngredientsByCategory("https://www.codecheck.info/kosmetik_koerperpflege/koerperpflege/koerperpeelings.kat", "koerperpeelings.json")
+        scraper.writeProductWithIngredientsByCategory("https://www.codecheck.info/kosmetik_koerperpflege/koerperpflege/koerperpeelings.kat")
     }
 }

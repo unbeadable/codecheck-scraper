@@ -6,11 +6,18 @@ import pages.ProductPage
 import java.io.File
 import java.time.LocalDateTime
 
+data class Result(val products: JsonObject, val linksVisited: Int, val deadlinks: Int)
 
 class CodeCheckScraper {
     private var parser: CodeCheckParser = CodeCheckParser()
+    private var linksVisited: Int = 0
+    private var deadlinks: Int = 0
 
-    fun writeProductWithIngredientsByCategory(categoryUrl: String, filename: String) {
+    fun writeProductWithIngredientsByCategory(categoryUrl: String): Any {
+
+        linksVisited = 0
+        deadlinks = 0
+
         var counter = 1
         var pair = writeProductWithIngredientsByCategoryPage(categoryUrl, counter)
         var hasNext = pair.first
@@ -29,7 +36,7 @@ class CodeCheckScraper {
                 Pair("products", products)
         ))
 
-        File(filename).writeText(Gson().toJson(categoryJson))
+        return Result(categoryJson, linksVisited, deadlinks)
     }
 
     fun writeProductWithIngredientsByCategoryPage(categoryUrl: String, pageNumber: Int = 1):Pair<Boolean, Iterable<JsonObject>> {
@@ -51,6 +58,7 @@ class CodeCheckScraper {
     fun writeProductWithIngredients(productUrl: String): JsonObject {
         try {
             val page: ProductPage = parser.parseProductPage(Jsoup.connect(productUrl).get())
+            linksVisited++
             return JsonObject(mapOf(
                     Pair("url", productUrl),
                     Pair("timestamp", LocalDateTime.now()),
@@ -59,6 +67,7 @@ class CodeCheckScraper {
                     Pair("category", page.getCategory()),
                     Pair("ingredients", page.getIngredients())))
         } catch (e: Exception) {
+            deadlinks++
             println("Deadlink for product link: $productUrl with error $e")
         }
         return JsonObject()
