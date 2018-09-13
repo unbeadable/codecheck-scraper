@@ -10,11 +10,6 @@ import java.time.LocalDateTime
 class CodeCheckScraper {
     private var parser: CodeCheckParser = CodeCheckParser()
 
-    fun getCategoryLinksFromFile(): List<String>? {
-        val stream: InputStream = CodeCheckScraper::class.java.getResource("codecheckLinks.json").openStream()
-        return Klaxon().parseArray(stream)
-    }
-
     fun writeProductWithIngredientsByCategory(categoryUrl: String, filename: String) {
         var counter = 1
         var pair = writeProductWithIngredientsByCategoryPage(categoryUrl, counter)
@@ -30,6 +25,7 @@ class CodeCheckScraper {
 
         val categoryJson = JsonObject(mapOf(
                 Pair("url", categoryUrl),
+                Pair("timestamp", LocalDateTime.now()),
                 Pair("products", products)
         ))
 
@@ -39,7 +35,6 @@ class CodeCheckScraper {
     fun writeProductWithIngredientsByCategoryPage(categoryUrl: String, pageNumber: Int = 1):Pair<Boolean, Iterable<JsonObject>> {
         val products = mutableListOf<JsonObject>()
         val url = "${categoryUrl.split(".kat")[0]}/page-$pageNumber.kat"
-        println("visiting category page: $url")
 
         try {
             val page: CategoryPage = parser.parseCategoryPage(Jsoup.connect(url).get())
