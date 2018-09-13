@@ -9,9 +9,8 @@ fun main(args: Array<String>) {
         val url = it.url
         println("visiting category: $url")
 
-        scraper.writeProductWithIngredientsByCategory(url, "results/${it.category}.json")
+        scraper.writeProductWithIngredientsByCategory(url, "results/codecheck/${it.category}.json")
     }
 }
 
 class Link(val category: String, val url: String)
-
