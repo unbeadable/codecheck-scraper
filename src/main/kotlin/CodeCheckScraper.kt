@@ -1,9 +1,9 @@
 import com.beust.klaxon.JsonObject
-import com.beust.klaxon.Klaxon
 import com.google.gson.Gson
 import org.jsoup.Jsoup
+import pages.CategoryPage
+import pages.ProductPage
 import java.io.File
-import java.io.InputStream
 import java.time.LocalDateTime
 
 
