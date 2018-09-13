@@ -14,12 +14,6 @@ class CodeCheckScraperTest {
     }
 
     @Test
-    fun shouldGetLinksFromFile() {
-        assertThat(scraper.getCategoryLinksFromFile()!![0], `is`("https://www.codecheck.info/kosmetik_koerperpflege/aetherische_oele_pflanzenauszuege/aetherische_oele_mischungen.kat"))
-        assertThat(scraper.getCategoryLinksFromFile()!![1], `is`("https://www.codecheck.info/kosmetik_koerperpflege/aetherische_oele_pflanzenauszuege/aetherische_oele_100_rein.kat"))
-    }
-
-    @Test
     fun shouldWriteProductWithIngredients() {
         val product: com.beust.klaxon.JsonObject = scraper.writeProductWithIngredients("https://www.codecheck.info/kosmetik_koerperpflege/koerperpflege/koerperpeelings/ean_3259552003503/id_518462/EISENBERG_Exfoliating_Body_Gel.pro")
 
@@ -62,6 +56,6 @@ class CodeCheckScraperTest {
     @Test
     @Ignore
     fun shouldWriteProductsWithIngredientsByCategory()  {
-        scraper.writeProductWithIngredientsByCategory("https://www.codecheck.info/kosmetik_koerperpflege/koerperpflege/koerperpeelings.kat")
+        scraper.writeProductWithIngredientsByCategory("https://www.codecheck.info/kosmetik_koerperpflege/koerperpflege/koerperpeelings.kat", "koerperpeelings.json")
     }
 }

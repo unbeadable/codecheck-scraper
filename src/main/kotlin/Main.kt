@@ -1,13 +1,17 @@
-import org.jsoup.Jsoup
-import org.jsoup.nodes.Element
-import java.io.File
+import com.beust.klaxon.Klaxon
+import java.io.InputStream
 
 fun main(args: Array<String>) {
+    val scraper = CodeCheckScraper()
 
-    val document = Jsoup.parse(File("codecheck.html"), "UTF-8")
+    val stream: InputStream = CodeCheckScraper::class.java.getResource("codecheckLinks.json").openStream()
+    Klaxon().parseArray<Link>(stream)?.forEach {
+        val url = it.url
+        println("visiting category: $url")
 
-    val body: Element = document.body()
-
-    println(body)
+        scraper.writeProductWithIngredientsByCategory(url, "results/${it.category}.json")
+    }
 }
+
+class Link(val category: String, val url: String)
 
