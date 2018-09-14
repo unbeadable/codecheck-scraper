@@ -24,7 +24,7 @@ fun main(args: Array<String>) {
         val result: Result = scraper.getAllProductsBy(categoryUrl = url)
         File("results/data/$category.json").writeText(Klaxon().toJsonString(result.products))
 
-        val runbook = Runbook(category, url, start, LocalDateTime.now(), result.linksVisited, result.deadLinks)
+        val runbook = Runbook(category, url, start, LocalDateTime.now(), result.visitedLinks, result.invalidLinks)
         File("results/data/runbook-$category.json").writeText(Klaxon().toJsonString(runbook))
     }
 }

@@ -4,6 +4,7 @@ import org.jsoup.nodes.Document
 class DataScraper {
     private var document2page: DocumentToPage = DocumentToPage()
     private var page2data: PageToData = PageToData()
+    private var cleaner: DataCleaner = DataCleaner()
 
     private var linksVisited: Int = 0
     private var deadLinks: Int = 0
@@ -49,17 +50,24 @@ class DataScraper {
         var counter = 1
         var pair = getProductsBy(categoryUrl, counter)
         var hasNext = pair.first
-        var products = pair.second
+        var productPages = pair.second
 
         while (hasNext) {
             counter++
             pair = getProductsBy(categoryUrl, counter)
             hasNext = pair.first
-            products = products.union(pair.second)
+            productPages = productPages.union(pair.second)
         }
 
-        return Result(products.map { it -> page2data.convert(it) }, linksVisited, deadLinks)
+        val products = productPages.map { it -> page2data.convert(it) }
+        val cleanedProducts = cleaner.clean(products)
+
+        return Result(cleanedProducts, linksVisited, deadLinks, linksVisited - deadLinks - cleanedProducts.size)
     }
 }
 
-data class Result(val products: List<Product>, val linksVisited: Int, val deadLinks: Int)
+data class Result(
+        val products: List<Product>,
+        val visitedLinks: Int,
+        val invalidLinks: Int,
+        val invalidData: Int)
