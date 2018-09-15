@@ -17,17 +17,32 @@ data class LogBook(
 fun main(args: Array<String>) {
     val stream: InputStream = DataScraper::class.java.getResource("categoryLinks.json").openStream()
     val links = Klaxon().parseArray<Link>(stream) ?: throw RuntimeException("Could not parse json from file.")
+    val scraper = DataScraper()
+
     links.filterNot(Link::processed).forEach {
         val start = LocalDateTime.now()
 
-        val result: Result = DataScraper().getAllProductsBy(categoryUrl = it.url)
-        File("results/data/${it.category}.json").writeText(Klaxon().toJsonString(result.products))
+        val scrapingResult: ScrapingResult = scraper.getAllProductsBy(it.url)
+        File("results/data/${it.category}.json").writeText(Klaxon().toJsonString(scrapingResult.products))
 
-        val cleanedProducts = DataCleaner().clean(result.products)
+        val cleanedProducts = scrapingResult.products.clean()
         File("results/data/cleaned-${it.category}.json").writeText(Klaxon().toJsonString(cleanedProducts))
 
-        val invalidData = result.visitedLinks - result.brokenLinks - cleanedProducts.size
-        val logBook = LogBook(it.category, it.url, start, LocalDateTime.now(), result.visitedLinks, result.brokenLinks, invalidData)
+        val invalidData = scrapingResult.visitedLinks - scrapingResult.brokenLinks - cleanedProducts.size
+        val logBook = LogBook(it.category, it.url, start, LocalDateTime.now(), scrapingResult.visitedLinks, scrapingResult.brokenLinks, invalidData)
         File("results/data/logbook-${it.category}.json").writeText(Klaxon().toJsonString(logBook))
     }
+}
+
+fun List<Product>.clean(): List<Product> {
+    return this
+            .asSequence()
+            .filter { it.ingredients.orEmpty().toList().isNotEmpty() }
+            .filter { it.hasValidEan() }
+            .toList()
+}
+
+private fun Product.hasValidEan(): Boolean {
+    val thirteenDigits = "^(\\d{13})\$"
+    return this.ean.orEmpty().matches(Regex(thirteenDigits))
 }

@@ -1,6 +1,11 @@
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 
+data class ScrapingResult(
+        val products: List<Product>,
+        val visitedLinks: Int,
+        val brokenLinks: Int)
+
 class DataScraper {
     private var document2page: DocumentToPage = DocumentToPage()
     private var page2data: PageToData = PageToData()
@@ -9,20 +14,20 @@ class DataScraper {
     private var deadLinks: Int = 0
 
     private fun getDocumentBy(url: String): Document? {
-        try {
-            return Jsoup.connect(url).get()
+        return try {
+            Jsoup.connect(url).get()
         } catch (e: Exception) {
             println("Could not get document for: $url with error $e")
             deadLinks++
+            null
         }
-        return null
     }
 
     private fun getUrlBy(categoryUrl: String, pageNumber: Int): String {
         return "${categoryUrl.split(".kat")[0]}/page-$pageNumber.kat"
     }
 
-    private fun getProductBy(productUrl: String): ProductPage? {
+    private fun getProductByUrl(productUrl: String): ProductPage? {
         linksVisited++
         return document2page.convertToProductPage(getDocumentBy(productUrl), productUrl)
     }
@@ -34,13 +39,13 @@ class DataScraper {
         val page: CategoryPage? = document2page.convertToCategoryPage(getDocumentBy(url))
 
         page?.getUrls().orEmpty()
-                .mapNotNull { getProductBy(it) }
+                .mapNotNull(this::getProductByUrl)
                 .forEach { products.add(it) }
 
         return Pair(page?.hasNext() == true, products)
     }
 
-    fun getAllProductsBy(categoryUrl: String): Result {
+    fun getAllProductsBy(categoryUrl: String): ScrapingResult {
         linksVisited = 0
         deadLinks = 0
 
@@ -58,11 +63,6 @@ class DataScraper {
 
         val products = productPages.map { it -> page2data.convert(it) }
 
-        return Result(products, linksVisited, deadLinks)
+        return ScrapingResult(products, linksVisited, deadLinks)
     }
 }
-
-data class Result(
-        val products: List<Product>,
-        val visitedLinks: Int,
-        val brokenLinks: Int)
