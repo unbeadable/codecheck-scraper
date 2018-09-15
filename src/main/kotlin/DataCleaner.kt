@@ -1,11 +1,17 @@
 class DataCleaner {
-    private fun Product.hasInvalidEan(): Boolean {
-        return this.ean.orEmpty().matches(Regex("^(\\d{13})\$"))
+    companion object {
+        const val THIRTEEN_DIGITS = "^(\\d{13})\$"
+    }
+
+    private fun Product.hasValidEan(): Boolean {
+        return this.ean.orEmpty().matches(Regex(THIRTEEN_DIGITS))
     }
 
     fun clean(unprocessedData: List<Product>): List<Product> {
         return unprocessedData
-                .filter { it -> it.ingredients.orEmpty().toList().isNotEmpty() }
-                .filter { it -> it.hasInvalidEan() }
+                .asSequence()
+                .filter { it.ingredients.orEmpty().toList().isNotEmpty() }
+                .filter { it.hasValidEan() }
+                .toList()
     }
 }

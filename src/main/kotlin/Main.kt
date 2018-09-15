@@ -15,19 +15,18 @@ fun main(args: Array<String>) {
             var invalidData: Int = -1)
 
     val stream: InputStream = DataScraper::class.java.getResource("categoryLinks.json").openStream()
-    Klaxon().parseArray<Link>(stream)?.filter { it -> it.processed.not() }?.forEach {
-        val url = it.url
-        val category = it.category
+    val links = Klaxon().parseArray<Link>(stream) ?: throw RuntimeException("Could not parse json from file.")
+    links.filterNot(Link::processed).forEach {
         val start = LocalDateTime.now()
 
-        val result: Result = DataScraper().getAllProductsBy(categoryUrl = url)
-        File("results/data/$category.json").writeText(Klaxon().toJsonString(result.products))
+        val result: Result = DataScraper().getAllProductsBy(categoryUrl = it.url)
+        File("results/data/${it.category}.json").writeText(Klaxon().toJsonString(result.products))
 
         val cleanedProducts = DataCleaner().clean(result.products)
-        File("results/data/cleaned-$category.json").writeText(Klaxon().toJsonString(cleanedProducts))
+        File("results/data/cleaned-${it.category}.json").writeText(Klaxon().toJsonString(cleanedProducts))
 
         val invalidData = result.visitedLinks - result.brokenLinks - cleanedProducts.size
-        val runbook = Runbook(category, url, start, LocalDateTime.now(), result.visitedLinks, result.brokenLinks, invalidData)
-        File("results/data/runbook-$category.json").writeText(Klaxon().toJsonString(runbook))
+        val runbook = Runbook(it.category, it.url, start, LocalDateTime.now(), result.visitedLinks, result.brokenLinks, invalidData)
+        File("results/data/runbook-${it.category}.json").writeText(Klaxon().toJsonString(runbook))
     }
 }

@@ -35,8 +35,10 @@ class ProductPage(private val document: Document?, private val url: String?) {
         val elementsByClass = document?.getElementsByClass("rated-ingredients").orEmpty()
         return (if (elementsByClass.isEmpty()) "" else elementsByClass[0].text())
                 .split(",")
+                .asSequence()
                 .map { it.trim() }
                 .filter { it != "" }
+                .toList()
     }
 
     fun getUrl(): String {

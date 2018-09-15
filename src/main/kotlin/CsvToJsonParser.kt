@@ -9,18 +9,21 @@ data class AsinScopeCsvLine(
 )
 
 class CsvToJsonParser {
-
-    fun doStuff(): List<AsinScopeCsvLine> {
+    fun parseAsinCSV(): List<AsinScopeCsvLine> {
         val file = CsvToJsonParser::class.java.getResource("asin.csv").file
         val fileReader = BufferedReader(FileReader(file))
 
-        fileReader.readLine()
+        removeColumnHeaders(fileReader)
 
-        return fileReader.useLines {
-            it.map {
+        return fileReader.useLines { lines ->
+            lines.map {
                 val split: List<String> = it.split(",")
                 AsinScopeCsvLine(split[0], split[1])
             }.toList()
         }
+    }
+
+    private fun removeColumnHeaders(fileReader: BufferedReader) {
+        fileReader.readLine()
     }
 }

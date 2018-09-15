@@ -33,11 +33,9 @@ class DataScraper {
 
         val page: CategoryPage? = document2page.convertToCategoryPage(getDocumentBy(url))
 
-        page?.getUrls().orEmpty().stream().forEach {
-            if (getProductBy(it) != null) {
-                products.add(getProductBy(it)!!)
-            }
-        }
+        page?.getUrls().orEmpty()
+                .mapNotNull { getProductBy(it) }
+                .forEach { products.add(it) }
 
         return Pair(page?.hasNext() == true, products)
     }

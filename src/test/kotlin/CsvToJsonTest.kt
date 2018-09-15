@@ -8,7 +8,7 @@ class CsvToJsonTest {
     @Test
     fun shouldMapJsonToCsv() {
         val parser = CsvToJsonParser()
-        val result: List<AsinScopeCsvLine> = parser.doStuff()
+        val result: List<AsinScopeCsvLine> = parser.parseAsinCSV()
         Assert.assertThat(result[0], `is`(AsinScopeCsvLine("someAsin", "someEan")))
     }
 }
