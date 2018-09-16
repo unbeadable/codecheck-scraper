@@ -1,5 +1,7 @@
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+import pages.CategoryPage
+import pages.ProductPage
 
 data class ScrapingResult(
         val products: List<Product>,

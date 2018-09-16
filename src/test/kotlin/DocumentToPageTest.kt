@@ -3,6 +3,8 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.jsoup.Jsoup
 import org.junit.Before
 import org.junit.Test
+import pages.CategoryPage
+import pages.ProductPage
 import java.io.File
 
 class DocumentToPageTest {
@@ -17,22 +19,22 @@ class DocumentToPageTest {
     @Test
     fun shouldFindEAN() {
         val filePath: String = DocumentToPageTest::class.java.getResource("product-with-microplastic.html").file
-        val page: ProductPage? = converterDocumentTo.convertToProductPage(Jsoup.parse(File(filePath), "UTF-8"), "some.url")
-        assertThat(page!!.getEan(), `is`("3059944022392"))
+        val page: ProductPage = converterDocumentTo.convertToProductPage(Jsoup.parse(File(filePath), "UTF-8"), "some.url")
+        assertThat(page.getEan(), `is`("3059944022392"))
     }
 
     @Test
     fun shouldGetProductName() {
         val filePath: String = DocumentToPageTest::class.java.getResource("product-with-microplastic.html").file
-        val page: ProductPage? = converterDocumentTo.convertToProductPage(Jsoup.parse(File(filePath), "UTF-8"), "some.url")
-        assertThat(page!!.getProductName(), `is`("VEET Suprem Essence Kaltwachsstreifen"))
+        val page: ProductPage = converterDocumentTo.convertToProductPage(Jsoup.parse(File(filePath), "UTF-8"), "some.url")
+        assertThat(page.getProductName(), `is`("VEET Suprem Essence Kaltwachsstreifen"))
     }
 
     @Test
     fun shouldGetCategory() {
         val filePath: String = DocumentToPageTest::class.java.getResource("product-with-microplastic.html").file
-        val page: ProductPage? = converterDocumentTo.convertToProductPage(Jsoup.parse(File(filePath), "UTF-8"), "some.url")
-        assertThat(page!!.getCategory(), `is`("Warm- & Kaltwachs"))
+        val page: ProductPage = converterDocumentTo.convertToProductPage(Jsoup.parse(File(filePath), "UTF-8"), "some.url")
+        assertThat(page.getCategory(), `is`("Warm- & Kaltwachs"))
     }
 
     @Test

@@ -1,3 +1,4 @@
+import pages.ProductPage
 import java.time.LocalDateTime
 
 class PageToData {
