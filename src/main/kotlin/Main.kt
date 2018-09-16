@@ -3,7 +3,7 @@ import java.io.File
 import java.io.InputStream
 import java.time.LocalDateTime
 
-data class Link(val category: String, val url: String, val processed: Boolean)
+data class CategoryLink(val category: String, val url: String, val processed: Boolean)
 
 data class LogBook(
         val name: String,
@@ -16,10 +16,10 @@ data class LogBook(
 
 fun main(args: Array<String>) {
     val stream: InputStream = DataScraper::class.java.getResource("categoryLinks.json").openStream()
-    val links = Klaxon().parseArray<Link>(stream) ?: throw RuntimeException("Could not parse json from file.")
+    val categories = Klaxon().parseArray<CategoryLink>(stream) ?: throw RuntimeException("Could not parse json from file.")
     val scraper = DataScraper()
 
-    links.filterNot(Link::processed).forEach {
+    categories.filterNot(CategoryLink::processed).forEach {
         val start = LocalDateTime.now()
 
         val scrapingResult: ScrapingResult = scraper.getAllProductsBy(it.url)

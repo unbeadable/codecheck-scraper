@@ -53,8 +53,8 @@ class DocumentToPageTest {
     fun shouldFindUrlsOnCategoryPage() {
         val filePath: String = DocumentToPageTest::class.java.getResource("category.html").file
         val page: CategoryPage? = converterDocumentTo.convertToCategoryPage(Jsoup.parse(File(filePath), "UTF-8"))
-        assertThat(page!!.getUrls()[0], `is`("https://www.codecheck.info/kosmetik_koerperpflege/rasur_enthaarung/warm_kaltwachs/id_865576968/Balea_Kaltwachsstreifen_Koerper.pro"))
-        assertThat(page.getUrls()[1], `is`("https://www.codecheck.info/kosmetik_koerperpflege/rasur_enthaarung/warm_kaltwachs/ean_8718924877340/id_2040985225/Soft_Touch_Cold_Wax_Strips_Sensitive_Skin.pro"))
+        assertThat(page!!.productUrls[0], `is`("https://www.codecheck.info/kosmetik_koerperpflege/rasur_enthaarung/warm_kaltwachs/id_865576968/Balea_Kaltwachsstreifen_Koerper.pro"))
+        assertThat(page.productUrls[1], `is`("https://www.codecheck.info/kosmetik_koerperpflege/rasur_enthaarung/warm_kaltwachs/ean_8718924877340/id_2040985225/Soft_Touch_Cold_Wax_Strips_Sensitive_Skin.pro"))
     }
 
     @Test

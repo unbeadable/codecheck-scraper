@@ -1,18 +1,16 @@
 package pages
 
 import org.jsoup.nodes.Document
-import org.jsoup.nodes.Element
 
 class CategoryPage(private val document: Document?) {
-    private fun Element.asProductUrl(): String {
-        val relativePath = this.getElementsByAttribute("href").attr("href")
-        return "https://www.codecheck.info$relativePath"
-    }
 
-    fun getUrls(): List<String> {
+    val productUrls: List<String> get() {
         return document?.getElementsByClass("t")
                 .orEmpty()
-                .map { it.asProductUrl() }
+                .map {
+                    val relativePath = it.getElementsByAttribute("href").attr("href")
+                    "https://www.codecheck.info$relativePath"
+                }
     }
 
     fun hasNext(): Boolean {

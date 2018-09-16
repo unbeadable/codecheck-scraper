@@ -37,7 +37,7 @@ class DataScraper {
     private fun getProductsBy(categoryUrl: String, pageNumber: Int): Pair<Boolean, Iterable<ProductPage>> {
         val url = getUrlBy(categoryUrl, pageNumber)
         val page: CategoryPage = document2page.convertToCategoryPage(getDocumentBy(url))
-        val products = page.getUrls().map(this::getProductByUrl)
+        val products = page.productUrls.map(this::getProductByUrl)
 
         return Pair(page.hasNext(), products)
     }
