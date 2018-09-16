@@ -2,11 +2,11 @@ import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 
 class DocumentToPage {
-    fun convertToProductPage(document: Document?, url: String): ProductPage? {
+    fun convertToProductPage(document: Document?, url: String): ProductPage {
         return ProductPage(document, url)
     }
 
-    fun convertToCategoryPage(document: Document?): CategoryPage? {
+    fun convertToCategoryPage(document: Document?): CategoryPage {
         return CategoryPage(document)
     }
 }
@@ -47,7 +47,6 @@ class ProductPage(private val document: Document?, private val url: String?) {
 }
 
 class CategoryPage(private val document: Document?) {
-
     private fun Element.asProductUrl(): String {
         val relativePath = this.getElementsByAttribute("href").attr("href")
         return "https://www.codecheck.info$relativePath"

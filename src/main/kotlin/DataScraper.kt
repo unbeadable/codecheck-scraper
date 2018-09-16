@@ -27,22 +27,17 @@ class DataScraper {
         return "${categoryUrl.split(".kat")[0]}/page-$pageNumber.kat"
     }
 
-    private fun getProductByUrl(productUrl: String): ProductPage? {
+    private fun getProductByUrl(productUrl: String): ProductPage {
         linksVisited++
         return document2page.convertToProductPage(getDocumentBy(productUrl), productUrl)
     }
 
     private fun getProductsBy(categoryUrl: String, pageNumber: Int = 1): Pair<Boolean, Iterable<ProductPage>> {
-        val products = mutableListOf<ProductPage>()
         val url = getUrlBy(categoryUrl, pageNumber)
+        val page: CategoryPage = document2page.convertToCategoryPage(getDocumentBy(url))
+        val products = page.getUrls().map(this::getProductByUrl)
 
-        val page: CategoryPage? = document2page.convertToCategoryPage(getDocumentBy(url))
-
-        page?.getUrls().orEmpty()
-                .mapNotNull(this::getProductByUrl)
-                .forEach { products.add(it) }
-
-        return Pair(page?.hasNext() == true, products)
+        return Pair(page.hasNext(), products)
     }
 
     fun getAllProductsBy(categoryUrl: String): ScrapingResult {
