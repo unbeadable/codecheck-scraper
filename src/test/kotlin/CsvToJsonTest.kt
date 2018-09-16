@@ -1,7 +1,5 @@
-import org.hamcrest.CoreMatchers.`is`
-import org.junit.Assert
-import org.junit.Test
-
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Test
 
 
 class CsvToJsonTest {
@@ -9,6 +7,6 @@ class CsvToJsonTest {
     fun shouldMapJsonToCsv() {
         val parser = CsvToJsonParser()
         val result: List<AsinScopeCsvLine> = parser.parseAsinCSV()
-        Assert.assertThat(result[0], `is`(AsinScopeCsvLine("someAsin", "someEan")))
+        assertThat(result[0]).isEqualTo(AsinScopeCsvLine("someAsin", "someEan"))
     }
 }

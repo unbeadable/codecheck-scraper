@@ -1,6 +1,5 @@
-import org.hamcrest.CoreMatchers.`is`
-import org.hamcrest.MatcherAssert
-import org.junit.Test
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 
 class DataCleaningTest {
@@ -12,9 +11,9 @@ class DataCleaningTest {
                 Product("foo.baz", LocalDateTime.MIN, "1234567890123", "", "", listOf("foo", "bar")))
         val withIngredients = unprocessed.clean()
 
-        MatcherAssert.assertThat(withIngredients.size, `is`(1))
-        MatcherAssert.assertThat(withIngredients[0].url, `is`("foo.baz"))
-        MatcherAssert.assertThat(withIngredients[0].ingredients!!.toList(), `is`(listOf("foo", "bar")))
+        assertThat(withIngredients.size).isEqualTo(1)
+        assertThat(withIngredients[0].url).isEqualTo("foo.baz")
+        assertThat(withIngredients[0].ingredients!!.toList()).isEqualTo(listOf("foo", "bar"))
     }
 
     @Test
@@ -26,7 +25,7 @@ class DataCleaningTest {
                 Product("foo4.bar", LocalDateTime.MIN, "1234567890123", "", "", listOf("foo", "bar")))
         val validEans = unprocessed.clean()
 
-        MatcherAssert.assertThat(validEans.size, `is`(1))
-        MatcherAssert.assertThat(validEans[0].url, `is`("foo4.bar"))
+        assertThat(validEans.size).isEqualTo(1)
+        assertThat(validEans[0].url).isEqualTo("foo4.bar")
     }
 }
