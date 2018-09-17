@@ -1,7 +1,7 @@
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 
-class DocumentFetcher {
+class WebClient {
 
     fun get(url: String): Document? {
         return try {

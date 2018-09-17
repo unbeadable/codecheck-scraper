@@ -8,15 +8,15 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-class DocumentFetcherTest {
+class WebClientTest {
 
-    private lateinit var fetcher: DocumentFetcher
+    private lateinit var fetcher: WebClient
     private lateinit var server: WireMockServer
 
     @BeforeEach
     fun setUp() {
         server = WireMockServer(options().port(8089))
-        fetcher = DocumentFetcher()
+        fetcher = WebClient()
         server.start()
         WireMock.configureFor("localhost", server.port())
     }
