@@ -11,4 +11,3 @@ class DocumentToPage {
         return CategoryPage(document)
     }
 }
-

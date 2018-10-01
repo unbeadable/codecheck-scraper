@@ -5,6 +5,9 @@ import org.jsoup.nodes.Element
 
 
 class ProductPage(private val document: Document?, private val url: String?) {
+    fun getCodeCheckProductId(): String {
+        return document?.getElementsByAttribute("data-item").toString().substringAfter("data-item=\"").substringBefore("\"")
+    }
     fun getEan(): String {
         val find: Element? = document?.getElementsByClass("product-info-item")
                 .orEmpty()

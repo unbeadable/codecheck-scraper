@@ -6,6 +6,7 @@ import pages.CategoryPage
 import pages.ProductPage
 import java.io.File
 
+
 class DocumentToPageTest {
 
     private lateinit var converterDocumentTo: DocumentToPage
@@ -21,6 +22,13 @@ class DocumentToPageTest {
         val page: ProductPage = converterDocumentTo.convertToProductPage(Jsoup.parse(File(filePath), "UTF-8"), "some.url")
         assertThat(page.getEan()).isEqualTo("3059944022392")
     }
+
+    @Test
+    fun shouldGetCodeCheckProductId() {
+            val filePath: String = DocumentToPageTest::class.java.getResource("product-with-microplastic.html").file
+            val page: ProductPage? = converterDocumentTo.convertToProductPage(Jsoup.parse(File(filePath), "UTF-8"), "some.url")
+            assertThat(page!!.getCodeCheckProductId()).isEqualTo("511195")
+        }
 
     @Test
     fun shouldGetProductName() {

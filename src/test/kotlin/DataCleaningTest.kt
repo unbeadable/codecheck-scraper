@@ -7,8 +7,8 @@ class DataCleaningTest {
     @Test
     fun shouldRemoveProductsWithoutIngredients() {
         val unprocessed = listOf(
-                Product("foo.bar", LocalDateTime.MIN, "1234567890123", "", "", emptyList()),
-                Product("foo.baz", LocalDateTime.MIN, "1234567890123", "", "", listOf("foo", "bar")))
+                Product("foo.bar", LocalDateTime.MIN, "1234567890123", "", "", "", emptyList()),
+                Product("foo.baz", LocalDateTime.MIN, "1234567890123", "", "", "", listOf("foo", "bar")))
         val withIngredients = unprocessed.clean()
 
         assertThat(withIngredients.size).isEqualTo(1)
@@ -19,10 +19,10 @@ class DataCleaningTest {
     @Test
     fun shouldRemoveProductsWithInvalidEans() {
         val unprocessed = listOf(
-                Product("foo1.bar", LocalDateTime.MIN, "", "", "", listOf("foo", "bar")),
-                Product("foo2.bar", LocalDateTime.MIN, "123", "", "", listOf("foo", "bar")),
-                Product("foo3.bar", LocalDateTime.MIN, "abc", "", "", listOf("foo", "bar")),
-                Product("foo4.bar", LocalDateTime.MIN, "1234567890123", "", "", listOf("foo", "bar")))
+                Product("foo1.bar", LocalDateTime.MIN, "", "", "", "", listOf("foo", "bar")),
+                Product("foo2.bar", LocalDateTime.MIN, "123", "", "", "", listOf("foo", "bar")),
+                Product("foo3.bar", LocalDateTime.MIN, "abc", "", "","", listOf("foo", "bar")),
+                Product("foo4.bar", LocalDateTime.MIN, "1234567890123", "", "","", listOf("foo", "bar")))
         val validEans = unprocessed.clean()
 
         assertThat(validEans.size).isEqualTo(1)
